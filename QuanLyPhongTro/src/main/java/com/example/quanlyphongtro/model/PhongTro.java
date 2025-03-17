@@ -1,6 +1,6 @@
 package com.example.quanlyphongtro.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class PhongTro {
     private int id;

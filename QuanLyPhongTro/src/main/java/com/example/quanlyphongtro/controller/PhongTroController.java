@@ -21,9 +21,6 @@ public class PhongTroController extends HttpServlet {
         }
 
         switch (action) {
-            case "detail":
-                phongTroHandler.showPhongTroDetail(request, response);
-                break;
             case "search":
                 phongTroHandler.searchPhongTro(request, response);
                 break;
@@ -33,9 +30,24 @@ public class PhongTroController extends HttpServlet {
             case "deleteMultiple":
                 phongTroHandler.deleteMultiplePhongTro(request, response);
                 break;
+            case "add":
+                phongTroHandler.addPhongTro(request, response);
+                break;
             default:
                 phongTroHandler.listPhongTro(request, response);
                 break;
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("add".equals(action)) {
+            phongTroHandler.addPhongTro(request, response);
+        }
+        if ("deleteMultiple".equals(action)) {
+            phongTroHandler.deleteMultiplePhongTro(request, response);
         }
     }
 }

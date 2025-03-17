@@ -15,37 +15,16 @@ public class PhongTroHandler {
 
     public void listPhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<PhongTro> danhSachPhongTro = phongTroService.getAllPhongTro();
-        System.out.println("Lấy danh sách phòng trọ: " + danhSachPhongTro.size());
 
         request.setAttribute("danhSachPhongTro", danhSachPhongTro);
-        forward(request, response, "index.jsp");
+        request.getRequestDispatcher("quanly.jsp").forward(request, response);
     }
 
     public void searchPhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String keyword = request.getParameter("search");
         List<PhongTro> danhSachPhongTro = phongTroService.searchPhongTro(keyword);
-
-        System.out.println("Tìm kiếm với từ khóa: " + keyword + " | Kết quả: " + danhSachPhongTro.size());
-
         request.setAttribute("danhSachPhongTro", danhSachPhongTro);
-        forward(request, response, "index.jsp");
-    }
-
-    public void showPhongTroDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        PhongTro phongTro = phongTroService.getPhongTroById(id);
-
-        if (phongTro != null) {
-            request.setAttribute("phongTro", phongTro);
-            forward(request, response, "detail.jsp");
-        } else {
-            response.sendRedirect("phongtro?action=list");
-        }
-    }
-
-    private void forward(HttpServletRequest request, HttpServletResponse response, String page) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(page);
-        dispatcher.forward(request, response);
+        request.getRequestDispatcher("quanly.jsp").forward(request, response);
     }
 
     public void deletePhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,11 +36,31 @@ public class PhongTroHandler {
     public void deleteMultiplePhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] selectedIds = request.getParameterValues("selectedIds");
         if (selectedIds != null) {
-            for (String id : selectedIds) {
-                phongTroService.deletePhongTro(Integer.parseInt(id));
+            int[] ids = new int[selectedIds.length];
+            for (int i = 0; i < selectedIds.length; i++) {
+                ids[i] = Integer.parseInt(selectedIds[i]);
             }
+            phongTroService.deleteMultiplePhongTro(ids);
         }
         response.sendRedirect("phongtro?action=list");
     }
 
+    public void addPhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String tenNguoiThue = request.getParameter("ten_nguoi_thue");
+        String soDienThoai = request.getParameter("so_dien_thoai");
+        String ngayBatDau = request.getParameter("ngay_bat_dau");
+        String hinhThucThanhToan = request.getParameter("ten_hinh_thuc");
+        String ghiChu = request.getParameter("ghi_chu");
+
+        PhongTro phongTro = new PhongTro();
+        phongTro.setTenNguoiThue(tenNguoiThue);
+        phongTro.setSoDienThoai(soDienThoai);
+        phongTro.setNgayBatDau(java.sql.Date.valueOf(ngayBatDau));
+        phongTro.setHinhThucThanhToan(hinhThucThanhToan);
+        phongTro.setGhiChu(ghiChu);
+
+        phongTroService.addPhongTro(phongTro);
+
+        response.sendRedirect(request.getContextPath() + "/phongtro?action=list");
+    }
 }

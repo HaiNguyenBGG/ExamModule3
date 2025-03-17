@@ -29,4 +29,11 @@ public class PhongTroService implements IPhongTroService {
         phongTroDAO.deletePhongTro(id);
     }
 
+    public void addPhongTro(PhongTro phongTro) {
+        phongTroDAO.addPhongTro(phongTro);
+    }
+    public void deleteMultiplePhongTro(int[] ids) {
+        phongTroDAO.deleteMultiplePhongTro(ids);
+    }
+
 }
