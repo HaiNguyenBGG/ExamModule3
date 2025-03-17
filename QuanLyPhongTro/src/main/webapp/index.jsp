@@ -11,7 +11,7 @@
 <div class="container text-center">
     <h1 class="mt-5">Chào mừng đến với hệ thống quản lý phòng trọ</h1>
     <p class="lead">Trang web giúp bạn quản lý phòng trọ một cách dễ dàng.</p>
-    <a href="quanly.jsp" class="btn btn-primary">Đi đến quản lý phòng trọ</a>
+    <a href="phongtro?action=list" class="btn btn-primary">Đi đến quản lý phòng trọ</a>
 </div>
 </body>
 </html>

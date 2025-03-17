@@ -21,10 +21,11 @@ public class PhongTroHandler {
     }
 
     public void searchPhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String keyword = request.getParameter("search");
-        List<PhongTro> danhSachPhongTro = phongTroService.searchPhongTro(keyword);
-        request.setAttribute("danhSachPhongTro", danhSachPhongTro);
-        request.getRequestDispatcher("quanly.jsp").forward(request, response);
+        String keyword = request.getParameter("keyword");
+        List<PhongTro> listPhongTro = phongTroService.searchPhongTro(keyword);
+        request.setAttribute("danhSachPhongTro", listPhongTro);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("quanly.jsp");
+        dispatcher.forward(request, response);
     }
 
     public void deletePhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,21 +47,45 @@ public class PhongTroHandler {
     }
 
     public void addPhongTro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String tenNguoiThue = request.getParameter("ten_nguoi_thue");
-        String soDienThoai = request.getParameter("so_dien_thoai");
-        String ngayBatDau = request.getParameter("ngay_bat_dau");
-        String hinhThucThanhToan = request.getParameter("ten_hinh_thuc");
-        String ghiChu = request.getParameter("ghi_chu");
+        try {
+            // Lấy dữ liệu từ form
+            String tenNguoiThue = request.getParameter("ten_nguoi_thue");
+            String soDienThoai = request.getParameter("so_dien_thoai");
+            String ngayBatDauStr = request.getParameter("ngay_bat_dau");
+            String hinhThucThanhToan = request.getParameter("hinh_thuc_thanh_toan");
+            String ghiChu = request.getParameter("ghi_chu");
 
-        PhongTro phongTro = new PhongTro();
-        phongTro.setTenNguoiThue(tenNguoiThue);
-        phongTro.setSoDienThoai(soDienThoai);
-        phongTro.setNgayBatDau(java.sql.Date.valueOf(ngayBatDau));
-        phongTro.setHinhThucThanhToan(hinhThucThanhToan);
-        phongTro.setGhiChu(ghiChu);
+            // Kiểm tra các trường dữ liệu không được trống
+            if (tenNguoiThue == null || soDienThoai == null || ngayBatDauStr == null) {
+                request.setAttribute("error", "Các trường thông tin không được để trống!");
+                request.getRequestDispatcher("quanly.jsp").forward(request, response);
+                return;
+            }
 
-        phongTroService.addPhongTro(phongTro);
+            // Chuyển đổi chuỗi ngày bắt đầu thành java.sql.Date
+            java.sql.Date ngayBatDau = java.sql.Date.valueOf(ngayBatDauStr);
 
-        response.sendRedirect(request.getContextPath() + "/phongtro?action=list");
+            // Tạo đối tượng PhongTro và set dữ liệu
+            PhongTro phongTro = new PhongTro();
+            phongTro.setTenNguoiThue(tenNguoiThue);
+            phongTro.setSoDienThoai(soDienThoai);
+            phongTro.setNgayBatDau(ngayBatDau);
+            phongTro.setHinhThucThanhToan(hinhThucThanhToan);
+            phongTro.setGhiChu(ghiChu);
+
+            // Thêm phòng trọ vào cơ sở dữ liệu
+            phongTroService.addPhongTro(phongTro);
+
+            // Lấy lại danh sách phòng trọ và hiển thị
+            List<PhongTro> danhSachPhongTro = phongTroService.getAllPhongTro();
+            request.setAttribute("danhSachPhongTro", danhSachPhongTro);
+
+            // Chuyển hướng về trang quản lý
+            request.getRequestDispatcher("quanly.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Có lỗi xảy ra khi thêm phòng trọ!");
+            request.getRequestDispatcher("quanly.jsp").forward(request, response);
+        }
     }
 }

@@ -13,12 +13,12 @@
     <h2 class="text-center text-primary">Danh sách phòng trọ</h2>
 
     <!-- Tìm kiếm và thêm mới -->
-    <form action="phongtro" method="get" class="d-flex mb-3">
-        <input type="text" name="search" class="form-control me-2" placeholder="Nhập mã phòng, tên hoặc số điện thoại">
-        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    <form action="" method="get">
+        <input type="hidden" name="action" value="search">
+        <input type="text" name="keyword" placeholder="Nhập từ khóa...">
+        <input type="submit" value="SEARCH">
         <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#addPhongTroModal">Thêm mới</button>
     </form>
-
     <form action="phongtro?action=deleteMultiple" method="post" class="mb-3">
         <table class="table table-striped table-bordered">
             <thead class="table-dark">
@@ -71,7 +71,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="phongtro?action=add" method="post">
+                <form method="post" action="phongtro?action=add">
                     <div class="mb-3">
                         <label for="ten_nguoi_thue" class="form-label">Tên người thuê</label>
                         <input type="text" class="form-control" id="ten_nguoi_thue" name="ten_nguoi_thue" required>
@@ -86,8 +86,17 @@
                     </div>
                     <div class="mb-3">
                         <label for="hinh_thuc_thanh_toan" class="form-label">Hình thức thanh toán</label>
-                        <input type="text" class="form-control" id="hinh_thuc_thanh_toan" name="hinh_thuc_thanh_toan" required>
+                        <select class="form-control" id="hinh_thuc_thanh_toan" name="hinh_thuc_thanh_toan" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
                     </div>
+                    <p class="mt-2">
+                        Hình thức 1: Theo tháng <br>
+                        Hình thức 2: Theo quý <br>
+                        Hình thức 3: Theo năm
+                    </p>
                     <div class="mb-3">
                         <label for="ghi_chu" class="form-label">Ghi chú</label>
                         <textarea class="form-control" id="ghi_chu" name="ghi_chu"></textarea>

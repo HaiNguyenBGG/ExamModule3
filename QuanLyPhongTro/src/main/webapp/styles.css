@@ -1,15 +1,196 @@
 body {
-    background-color: #f8f9fa;
+    background-color: #f4f7fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
 }
+
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin-top: 30px;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
-.table th, .table td {
+
+h2 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 25px;
     text-align: center;
-    vertical-align: middle;
 }
+
+form input[type="text"],
+form input[type="date"],
+form textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    transition: border 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="date"]:focus,
+form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+form button[type="submit"],
+form button[type="button"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover,
+form button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th,
+table td {
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    color: #333;
+}
+
+table th {
+    background-color: #007bff;
+    color: white;
+}
+
+table td {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+table td a {
+    color: white;
+    background-color: #dc3545;
+    padding: 8px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+table td a:hover {
+    background-color: #c82333;
+}
+
+button[type="submit"].btn-danger {
+    background-color: #dc3545;
+    color: white;
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+button[type="submit"].btn-danger:hover {
+    background-color: #c82333;
+}
+
+.modal-content {
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: white;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 15px;
+}
+
+.modal-body form .form-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.modal-body form .form-control {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    transition: border 0.3s ease;
+}
+
+.modal-body form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+.modal-body form button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-body form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+#selectAll {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+table td {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+table td a {
+    text-decoration: none;
+    color: white;
+    background-color: #dc3545;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+table td a:hover {
+    background-color: #c82333;
+}
+
+.mt-2 {
+    margin-top: 10px; /* Thêm khoảng cách trên */
+}
+
+p {
+    font-size: 14px; /* Cỡ chữ */
+    color: #555; /* Màu chữ */
+    line-height: 1.6; /* Khoảng cách giữa các dòng */
+    background-color: #f8f9fa; /* Màu nền nhẹ */
+    padding: 10px; /* Khoảng cách xung quanh chữ */
+    border-radius: 5px; /* Bo tròn các góc */
+    border: 1px solid #ddd; /* Đường viền mỏng */
+}
+

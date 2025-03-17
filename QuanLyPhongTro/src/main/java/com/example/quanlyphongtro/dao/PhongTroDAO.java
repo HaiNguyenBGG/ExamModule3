@@ -39,34 +39,26 @@ public class PhongTroDAO {
     }
 
     public List<PhongTro> searchPhongTro(String keyword) {
-        List<PhongTro> danhSach = new ArrayList<>();
-        String sql = "SELECT pt.id, pt.ten_nguoi_thue, pt.so_dien_thoai, pt.ngay_bat_dau, ht.ten_hinh_thuc AS hinh_thuc_tt, pt.ghi_chu " +
-                "FROM phong_tro pt JOIN hinh_thuc_tt ht ON pt.hinh_thuc_tt_id = ht.id " +
-                "WHERE pt.id LIKE ? OR pt.ten_nguoi_thue LIKE ? OR pt.so_dien_thoai LIKE ?";
+        List<PhongTro> phongTros = new ArrayList<>();
+        try (Connection connection = DBConfig.getConnection(); CallableStatement stmt = connection.prepareCall("{CALL TimKiemPhongTro(?)}")) {
 
-        try (Connection conn = DBConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            String searchParam = "%" + keyword + "%";
-            stmt.setString(1, searchParam);
-            stmt.setString(2, searchParam);
-            stmt.setString(3, searchParam);
-
+            stmt.setString(1, keyword);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                danhSach.add(new PhongTro(
-                        rs.getInt("id"),
-                        rs.getString("ten_nguoi_thue"),
-                        rs.getString("so_dien_thoai"),
-                        rs.getDate("ngay_bat_dau"),
-                        rs.getString("hinh_thuc_tt"),
-                        rs.getString("ghi_chu")
-                ));
+                int id = rs.getInt("id");
+                String ten_nguoi_thue = rs.getString("ten_nguoi_thue");
+                String so_dien_thoai = rs.getString("so_dien_thoai");
+                Date ngay_bat_dau = rs.getDate("ngay_bat_dau");
+                String hinh_thuc_tt = String.valueOf(rs.getInt("hinh_thuc_tt_id"));
+                String ghi_chu = rs.getString("ghi_chu");
+                PhongTro phongTro = new PhongTro(id, ten_nguoi_thue, so_dien_thoai,
+                        ngay_bat_dau, hinh_thuc_tt, ghi_chu);
+                phongTros.add(phongTro);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return danhSach;
+        return phongTros;
     }
 
     public PhongTro getPhongTroById(int id) {
@@ -124,18 +116,43 @@ public class PhongTroDAO {
     }
 
     public void addPhongTro(PhongTro phongTro) {
-        String sql = "INSERT INTO phong_tro (ten_nguoi_thue, so_dien_thoai, ngay_bat_dau, hinh_thuc_thanh_toan, ghi_chu) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DBConfig.getConnection(); PreparedStatement statement = conn.prepareStatement(sql)) {
-            statement.setString(1, phongTro.getTenNguoiThue());
-            statement.setString(2, phongTro.getSoDienThoai());
-            statement.setDate(3, new java.sql.Date(phongTro.getNgayBatDau().getTime()));
-            statement.setString(4, phongTro.getHinhThucThanhToan());
-            statement.setString(5, phongTro.getGhiChu());
+        String query = "INSERT INTO phong_tro (ten_nguoi_thue, so_dien_thoai, ngay_bat_dau, hinh_thuc_tt_id, ghi_chu) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Phòng trọ đã được thêm thành công!");
+        try (Connection conn = DBConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Gán các giá trị vào PreparedStatement
+            stmt.setString(1, phongTro.getTenNguoiThue());
+            stmt.setString(2, phongTro.getSoDienThoai());
+            stmt.setDate(3, phongTro.getNgayBatDau());
+            stmt.setInt(4, Integer.parseInt(phongTro.getHinhThucThanhToan()));
+            stmt.setString(5, phongTro.getGhiChu());
+
+           int affectedRows = stmt.executeUpdate();
+
+
+            if (affectedRows > 0) {
+                ResultSet generatedKeys = stmt.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long idPhongTro = generatedKeys.getLong(1);
+                    String tenHinhThucQuery = "SELECT ten_hinh_thuc FROM hinh_thuc_tt WHERE id = ?";
+                    try (PreparedStatement stmt2 = conn.prepareStatement(tenHinhThucQuery)) {
+                        stmt2.setInt(1, Integer.parseInt(phongTro.getHinhThucThanhToan()));
+                        ResultSet rs = stmt2.executeQuery();
+                        if (rs.next()) {
+                            String tenHinhThuc = rs.getString("ten_hinh_thuc");
+
+                            String updateQuery = "UPDATE phong_tro SET ten_hinh_thuc = ? WHERE id = ?";
+                            try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                                updateStmt.setString(1, tenHinhThuc);
+                                updateStmt.setLong(2, idPhongTro);
+                                updateStmt.executeUpdate();
+                            }
+                        }
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
